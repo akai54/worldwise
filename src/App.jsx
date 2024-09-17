@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CityList from "./components/CityList";
 import CountriesList from "./components/CountryList";
 import City from "./components/City";
+import Form from "./components/Form";
 
 import Product from "./pages/Product";
 import Pricing from "./pages/Pricing";
@@ -57,7 +58,7 @@ function App() {
             path="countries"
             element={<CountriesList cities={cities} isLoading={isLoading} />}
           />
-          <Route path="form" element={<p>form</p>} />
+          <Route path="form" element={<Form />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
