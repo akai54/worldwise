@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import CityList from "./components/CityList";
 import CountriesList from "./components/CountryList";
@@ -47,7 +47,10 @@ function App() {
         <Route path="app" element={<AppLayout />}>
           <Route
             index
-            element={<CityList cities={cities} isLoading={isLoading} />}
+            element={
+              // Use <Navigate /> in a declarative way inside nested routes.
+              <Navigate replace to="cities" />
+            }
           />
           <Route
             path="cities"
