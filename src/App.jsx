@@ -7,6 +7,7 @@ import AppLayout from "./pages/AppLayout";
 import Login from "./pages/Login";
 import CityList from "./components/CityList";
 import { useEffect, useState } from "react";
+import CountriesList from "./components/CountryList";
 
 function App() {
   const [cities, setCities] = useState([]);
@@ -22,7 +23,7 @@ function App() {
         const data = await res.json();
 
         console.log(data);
-        //setCities(data.cities);
+        setCities(data.cities);
       } catch (error) {
         console.error(error);
       } finally {
@@ -48,7 +49,10 @@ function App() {
             path="cities"
             element={<CityList cities={cities} isLoading={isLoading} />}
           />
-          <Route path="countries" element={<p>countries</p>} />
+          <Route
+            path="countries"
+            element={<CountriesList cities={cities} isLoading={isLoading} />}
+          />
           <Route path="form" element={<p>form</p>} />
         </Route>
         <Route path="*" element={<NotFound />} />
