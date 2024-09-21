@@ -5,6 +5,7 @@ const citiesContext = createContext();
 function CitiesProvider({ children }) {
   const [cities, setCities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentCity, setCurrentCity] = useState({});
 
   useEffect(() => {
     async function fetchCities() {
@@ -26,8 +27,17 @@ function CitiesProvider({ children }) {
     fetchCities();
   }, []);
 
+  function getCity(id) {
+    const city = cities.find((city) => city.id == id);
+    console.log(id, cities, city);
+    if (!city) {
+      throw new Error(`City with id ${id} not found`);
+    }
+    setCurrentCity(city);
+  }
+
   return (
-    <citiesContext.Provider value={{ cities, isLoading }}>
+    <citiesContext.Provider value={{ cities, isLoading, currentCity, getCity }}>
       {children}
     </citiesContext.Provider>
   );
