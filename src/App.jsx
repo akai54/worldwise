@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import CityList from "./components/CityList";
@@ -12,60 +11,34 @@ import Homepage from "./pages/Homepage";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./pages/AppLayout";
 import Login from "./pages/Login";
+import { CitiesProvider } from "./contexts/CitiesContext";
 
 function App() {
-  const [cities, setCities] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    async function fetchCities() {
-      try {
-        setIsLoading(true);
-        const res = await fetch(
-          "https://akai54.github.io/worldwise/data/cities.json"
-        );
-        const data = await res.json();
-
-        console.log(data);
-        setCities(data.cities);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchCities();
-  }, []);
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="product" element={<Product />} />
-        <Route path="pricing" element={<Pricing />} />
-        <Route path="login" element={<Login />} />
-        <Route path="app" element={<AppLayout />}>
-          <Route
-            index
-            element={
-              // Use <Navigate /> in a declarative way inside nested routes.
-              <Navigate replace to="cities" />
-            }
-          />
-          <Route
-            path="cities"
-            element={<CityList cities={cities} isLoading={isLoading} />}
-          />
-          <Route path="cities/:id" element={<City />} />
-          <Route
-            path="countries"
-            element={<CountriesList cities={cities} isLoading={isLoading} />}
-          />
-          <Route path="form" element={<Form />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <CitiesProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="product" element={<Product />} />
+          <Route path="pricing" element={<Pricing />} />
+          <Route path="login" element={<Login />} />
+          <Route path="app" element={<AppLayout />}>
+            <Route
+              index
+              element={
+                // Use <Navigate /> in a declarative way inside nested routes.
+                <Navigate replace to="cities" />
+              }
+            />
+            <Route path="cities" element={<CityList />} />
+            <Route path="cities/:id" element={<City />} />
+            <Route path="countries" element={<CountriesList />} />
+            <Route path="form" element={<Form />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </CitiesProvider>
   );
 }
 
