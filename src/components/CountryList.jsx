@@ -18,7 +18,7 @@ function CountryList() {
   cities.forEach((city) => {
     if (!countrySet.has(city.country)) {
       countrySet.add(city.country);
-      countries.push({ country: city.country, emoji: city.emoji });
+      countries.push({ country: city.country, countryFlag: city.countryFlag });
     }
   });
 

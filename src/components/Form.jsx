@@ -8,6 +8,9 @@ import Button from "./Button";
 import BackButton from "./BackButton";
 import Message from "./Message";
 import Spinner from "./Spinner";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { useCities } from "../contexts/CitiesContext";
 
 const BASE_URL = "https://api.bigdatacloud.net/data/reverse-geocode-client";
 
@@ -20,6 +23,8 @@ function Form() {
   const [isLoadingGeoCode, setIsLoadingGeoCode] = useState(false);
   const [countryFlag, setCountryFlag] = useState("");
   const [geoErr, setGeoErr] = useState("");
+
+  const { addCity } = useCities();
 
   useEffect(() => {
     if (!lat || !lng) return;
@@ -46,6 +51,24 @@ function Form() {
     fetchCityData();
   }, [lat, lng]);
 
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!cityName || !date) return;
+
+    const newCity = {
+      id: Math.floor(10000000 + Math.random() * 90000000),
+      cityName,
+      country,
+      countryFlag,
+      date,
+      notes,
+      position: { lat, lng },
+    };
+
+    addCity(newCity);
+  }
+
   if (isLoadingGeoCode) return <Spinner />;
 
   if (!lat || !lng) return <Message message="No location data found" />;
@@ -53,7 +76,7 @@ function Form() {
   if (geoErr) return <Message message={geoErr} />;
 
   return (
-    <form className={styles.form}>
+    <form className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.row}>
         <label htmlFor="cityName">City name</label>
         <input
@@ -66,10 +89,12 @@ function Form() {
 
       <div className={styles.row}>
         <label htmlFor="date">When did you go to {cityName}?</label>
-        <input
+
+        <DatePicker
           id="date"
-          onChange={(e) => setDate(e.target.value)}
-          value={date}
+          selected={date}
+          onChange={(date) => setDate(date)}
+          dateFormat="dd/MM/yyyy"
         />
       </div>
 

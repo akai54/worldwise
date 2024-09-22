@@ -16,14 +16,14 @@ function City() {
 
   if (isLoading) return <Spinner />;
 
-  const { cityName, emoji, date, notes } = currentCity;
+  const { cityName, countryFlag, date, notes } = currentCity;
 
   return (
     <div className={styles.city}>
       <div className={styles.row}>
         <h6>City name</h6>
         <h3>
-          <span>{emoji}</span> {cityName}
+          <span>{countryFlag}</span> {cityName}
         </h3>
       </div>
 
