@@ -16,7 +16,6 @@ function CitiesProvider({ children }) {
         );
         const data = await res.json();
 
-        console.log(data);
         setCities(data.cities);
       } catch (error) {
         console.error(error);
@@ -28,16 +27,29 @@ function CitiesProvider({ children }) {
   }, []);
 
   function getCity(id) {
-    const city = cities.find((city) => city.id == id);
-    console.log(id, cities, city);
-    if (!city) {
-      throw new Error(`City with id ${id} not found`);
+    try {
+      setIsLoading(true);
+      const city = cities.find((city) => city.id == id);
+      if (!city) {
+        throw new Error(`City with id ${id} not found`);
+      }
+      setCurrentCity(city);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setTimeout(() => setIsLoading(false), 500);
     }
-    setCurrentCity(city);
   }
 
   function addCity(city) {
-    setCities([...cities, city]);
+    try {
+      setIsLoading(true);
+      setCities([...cities, city]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setTimeout(() => setIsLoading(false), 500);
+    }
   }
 
   return (

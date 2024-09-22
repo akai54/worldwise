@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useUrlPosition } from "../hooks/useUrlPosition";
-
 import { getCountryFlag } from "../utils/getCountryFlag";
 
 import styles from "./Form.module.css";
@@ -11,6 +10,7 @@ import Spinner from "./Spinner";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useCities } from "../contexts/CitiesContext";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "https://api.bigdatacloud.net/data/reverse-geocode-client";
 
@@ -24,7 +24,9 @@ function Form() {
   const [countryFlag, setCountryFlag] = useState("");
   const [geoErr, setGeoErr] = useState("");
 
-  const { addCity } = useCities();
+  const { addCity, isLoading } = useCities();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!lat || !lng) return;
@@ -51,6 +53,10 @@ function Form() {
     fetchCityData();
   }, [lat, lng]);
 
+  useEffect(() => {
+    console.log(isLoading);
+  }, [isLoading]);
+
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -67,6 +73,8 @@ function Form() {
     };
 
     addCity(newCity);
+    console.log(isLoading, newCity);
+    navigate("/app/cities");
   }
 
   if (isLoadingGeoCode) return <Spinner />;
@@ -76,7 +84,10 @@ function Form() {
   if (geoErr) return <Message message={geoErr} />;
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
+    <form
+      className={`${styles.form} ${isLoading ? styles.loading : ""}`}
+      onSubmit={handleSubmit}
+    >
       <div className={styles.row}>
         <label htmlFor="cityName">City name</label>
         <input
