@@ -22,12 +22,13 @@ function Form() {
   const [geoErr, setGeoErr] = useState("");
 
   useEffect(() => {
+    if (!lat || !lng) return;
+
     async function fetchCityData() {
       try {
         setIsLoadingGeoCode(true);
         const res = await fetch(`${BASE_URL}?latitude=${lat}&longitude=${lng}`);
         const data = await res.json();
-        console.log(data);
 
         if (!data.countryCode) {
           throw new Error("No country code found");
@@ -46,6 +47,8 @@ function Form() {
   }, [lat, lng]);
 
   if (isLoadingGeoCode) return <Spinner />;
+
+  if (!lat || !lng) return <Message message="No location data found" />;
 
   if (geoErr) return <Message message={geoErr} />;
 
