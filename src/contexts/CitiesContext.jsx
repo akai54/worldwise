@@ -11,12 +11,17 @@ function CitiesProvider({ children }) {
     async function fetchCities() {
       try {
         setIsLoading(true);
-        const res = await fetch(
-          "https://akai54.github.io/worldwise/data/cities.json"
-        );
-        const data = await res.json();
+        const sotredCities = localStorage.getItem("cities");
+        if (sotredCities) {
+          setCities(JSON.parse(sotredCities));
+        } else {
+          const res = await fetch(
+            "https://akai54.github.io/worldwise/data/cities.json"
+          );
+          const data = await res.json();
 
-        setCities(data.cities);
+          setCities(data.cities);
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -25,6 +30,10 @@ function CitiesProvider({ children }) {
     }
     fetchCities();
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("cities", JSON.stringify(cities));
+  }, [cities]);
 
   function getCity(id) {
     try {
@@ -52,9 +61,21 @@ function CitiesProvider({ children }) {
     }
   }
 
+  function deleteCity(city) {
+    try {
+      setIsLoading(true);
+      const newCities = cities.filter((c) => c.id !== city.id);
+      setCities(newCities);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setTimeout(() => setIsLoading(false), 500);
+    }
+  }
+
   return (
     <citiesContext.Provider
-      value={{ cities, isLoading, currentCity, getCity, addCity }}
+      value={{ cities, isLoading, currentCity, getCity, addCity, deleteCity }}
     >
       {children}
     </citiesContext.Provider>
