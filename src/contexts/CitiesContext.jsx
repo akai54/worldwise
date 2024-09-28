@@ -55,7 +55,7 @@ function CitiesProvider({ children }) {
       try {
         const sotredCities = localStorage.getItem("cities");
 
-        if (sotredCities) {
+        if (sotredCities.length > 2) {
           dispatch({
             type: "cities/loaded",
             payload: JSON.parse(sotredCities),
@@ -66,7 +66,9 @@ function CitiesProvider({ children }) {
           );
           const data = await res.json();
 
-          dispatch({ type: "cities/loaded", payload: data });
+          console.log(data);
+
+          dispatch({ type: "cities/loaded", payload: data.cities });
         }
       } catch (error) {
         dispatch({ type: "rejected", payload: error.message });
